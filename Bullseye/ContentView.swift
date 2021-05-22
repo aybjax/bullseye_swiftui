@@ -14,78 +14,71 @@ struct ContentView: View {
     
     // User interface views
     @State var alertIsVisible: Bool = false
+    @State var sliderValue: Double = 50
     
     // User interface content and layout
     var body: some View {
         VStack {
+            Spacer()
             
             // Target row
             HStack {
                 Text("Put the bullseye as close as you can to:")
-//                    .fontWeight(.black)
-//                    .foregroundColor(.blue)
                     .padding()
+                Text("100")
             }
             
+            Spacer()
+            
             // Slider row
-            // TODO: Add views for slider row here
+            HStack {
+                Text("1")
+//                Slider(value: Binding.constant(100))
+//                Slider(value: .constant(100))
+                Slider(value: $sliderValue, in: 1...100)
+                Text("100")
+            }
+            
+            Spacer()
             
             // Button row
-            /**
-             Button as in book
-             */
-//            Button(action: {}) {
-//                Text("Hit me")
-//            }
-            /**
-             Button with method
-             */
-//            Button("Hit me", action: self.btnPrsd)
-            /**
-             Button with callback and method chaining
-             */
-//            Button("Hit me") {
-//                print("cb pressed")
-//                self.alertIsVisible = true
-//            }
-//            .alert(isPresented: self.$alertIsVisible, content: {
-//                Alert(
-//                    title: Text("Hello there"),
-//                    message: Text("This is my first pop-up"),
-//                    dismissButton: .default(Text("Awesome!"))
-//                )
-//            })
-            /**
-             Alert as cb
-             */
-//            Button("Hit me", action: self.btnPrsd)
-//            .alert(isPresented: self.$alertIsVisible) {
-//                Alert(
-//                    title: Text("Hello there"),
-//                    message: Text("This is my first pop-up"),
-//                    dismissButton: .default(Text("Awesome!"))
-//                )
-//            }
-            /**
-             presentation() instead of alert()
-                property without self.
-             */
             Button(action: {
                 print("button pressed")
                 self.alertIsVisible = true
             }) {
-                Text("hit me!")
+                Text("Hit me!")
             }
             .alert(isPresented: self.$alertIsVisible) {
                 Alert(
                     title: Text("Hello there"),
-                    message: Text("This is my first pop-up"),
+                    message: Text("The slider value is \(sliderInt)."),
                     dismissButton: .default(Text("Awesome!"))
                 )
             }
             
+            Spacer()
+            
             // Score row
-            // Todo: Add views for score, rounds, start and info buttons here
+            HStack {
+                Button("Start over") {}
+                
+                Spacer()
+                
+                Text("Score:")
+                Text("99999")
+                
+                Spacer()
+                
+                Text("Round:")
+                Text("99999")
+                
+                Spacer()
+                
+                Button(action:{}) {
+                    Text("Info")
+                }
+            }
+            .padding(.bottom, 20)
         }
     }
     
@@ -96,6 +89,12 @@ struct ContentView: View {
     func btnPrsd() {
         print("Button pressed!")
         self.alertIsVisible = true
+    }
+    
+    var sliderInt: Int {
+        return Int(
+            sliderValue.rounded()
+        )
     }
 }
 
