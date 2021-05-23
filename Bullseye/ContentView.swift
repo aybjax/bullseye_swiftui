@@ -68,101 +68,116 @@ struct ContentView: View {
     
     // User interface content and layout
     var body: some View {
-        VStack {
-            Spacer()
-            
-            // Target row
-            HStack {
-                Text("Put the bullseye as close as you can to:")
-                    .modifier(LabelStyle())
-                Text("\(target)")
-                    .modifier(ValueStyle())
+        NavigationView {
+            VStack {
+                Spacer()
+                
+                // Target row
+                HStack {
+                    Text("Put the bullseye as close as you can to:")
+                        .modifier(LabelStyle())
+                    Text("\(target)")
+                        .modifier(ValueStyle())
+                }
+                
+                Spacer()
+                
+                // Slider row
+                HStack {
+                    Text("1")
+                        .modifier(LabelStyle())
+    //                Slider(value: Binding.constant(100))
+    //                Slider(value: .constant(100))
+                    Slider(value: $sliderValue, in: 1...100)
+                        .accentColor(.green)
+                    Text("100")
+                        .modifier(LabelStyle())
+                }
+                
+                Spacer()
+                
+                // Button row
+                Button(action: {
+                    print("button pressed")
+                    alertIsVisible = true
+                }) {
+                    Text("Hit me!")
+                        .modifier(ButtonLargeTextStyle())
+                }
+                .background(
+                    Image("Button-Normal")
+                        .modifier(Shadow())
+                )
+                .alert(isPresented: self.$alertIsVisible) {
+                    Alert(
+                        title: Text("\(alertTitle)"),
+                        message: Text(
+                            scoringMessage
+                        ),
+                        dismissButton: .default(Text("Awesome!")) {
+                            newRound()
+                        }
+                    )
+                }
+                
+                Spacer()
+                
+                // Score row
+                HStack {
+                    Button(action: {
+                        startGame()
+                    }) {
+                        HStack{
+                            Image("StartOverIcon")
+                            Text("Start over").modifier(ButtonSmallTextStyle())
+                        }
+                    }
+                    .background(Image("Button-Highlighted")
+                                    .modifier(Shadow()))
+                    
+                    Spacer()
+                    
+                    Text("Score:").modifier(LabelStyle())
+                    Text("\(score)").modifier(ValueStyle())
+                    
+                    Spacer()
+                    
+                    Text("Round:").modifier(LabelStyle())
+                    Text("\(round)").modifier(ValueStyle())
+                    
+                    Spacer()
+                    
+//                    Button(action:{}) {
+//                        HStack{
+//                            Image("InfoButton")
+//                            Text("Info").modifier(ButtonSmallTextStyle())
+//                                .padding(.trailing)
+//                        }
+//                    }
+                    NavigationLink(destination: AboutView()) {
+                        HStack{
+                            Image("InfoButton")
+                            Text("Info").modifier(ButtonSmallTextStyle())
+                                .padding(.trailing)
+                        }
+                    }
+                    .background(Image("Button-Highlighted")
+                                    .modifier(Shadow()))
+                }
+                .padding(.bottom, 20)
+                .accentColor(ContentView.midnight_blue)
             }
-            
-            Spacer()
-            
-            // Slider row
-            HStack {
-                Text("1")
-                    .modifier(LabelStyle())
-//                Slider(value: Binding.constant(100))
-//                Slider(value: .constant(100))
-                Slider(value: $sliderValue, in: 1...100)
-                    .accentColor(.green)
-                Text("100")
-                    .modifier(LabelStyle())
-            }
-            
-            Spacer()
-            
-            // Button row
-            Button(action: {
-                print("button pressed")
-                alertIsVisible = true
-            }) {
-                Text("Hit me!")
-                    .modifier(ButtonLargeTextStyle())
+            .onAppear() {
+                self.startGame()
             }
             .background(
-                Image("Button-Normal")
-                    .modifier(Shadow())
+                Image("Background")
+                    .resizable()
+                    .scaledToFill()
             )
-            .alert(isPresented: self.$alertIsVisible) {
-                Alert(
-                    title: Text("\(alertTitle)"),
-                    message: Text(
-                        scoringMessage
-                    ),
-                    dismissButton: .default(Text("Awesome!")) {
-                        newRound()
-                    }
-                )
-            }
-            
-            Spacer()
-            
-            // Score row
-            HStack {
-                Button(action: {
-                    startGame()
-                }) {
-                    Image("StartOverIcon")
-                    Text("Start over").modifier(ButtonSmallTextStyle())
-                }
-                .background(Image("Button-Highlighted")
-                                .modifier(Shadow()))
-                
-                Spacer()
-                
-                Text("Score:").modifier(LabelStyle())
-                Text("\(score)").modifier(ValueStyle())
-                
-                Spacer()
-                
-                Text("Round:").modifier(LabelStyle())
-                Text("\(round)").modifier(ValueStyle())
-                
-                Spacer()
-                
-                Button(action:{}) {
-                    Image("InfoButton")
-                    Text("Info").modifier(ButtonSmallTextStyle())
-                        .padding(.trailing)
-                }
-                .background(Image("Button-Highlighted")
-                                .modifier(Shadow()))
-            }
-            .padding(.bottom, 20)
-            .accentColor(ContentView.midnight_blue)
         }
-        .onAppear() {
-            self.startGame()
-        }
-        .background(
-            Image("Background")
-                .resizable()
-                .scaledToFill()
-        )
+//        .navigationViewStyle(.stack) // Does not work
+        .navigationViewStyle(StackNavigationViewStyle())
     }
     
     
