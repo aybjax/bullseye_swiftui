@@ -11,10 +11,17 @@ struct ContentView: View {
         
     // Properties
     // ==========
+    var sliderInt: Int {
+        Int(
+            sliderValue.rounded()
+        )
+    }
     
     // User interface views
-    @State var alertIsVisible: Bool = false
-    @State var sliderValue: Double = 50
+    @State var alertIsVisible = false
+    @State var sliderValue = 50.0
+//    @State var target: Int = .random(in: 1...100)
+    @State var target = Int.random(in: 1...100)
     
     // User interface content and layout
     var body: some View {
@@ -25,7 +32,7 @@ struct ContentView: View {
             HStack {
                 Text("Put the bullseye as close as you can to:")
                     .padding()
-                Text("100")
+                Text("\(target)")
             }
             
             Spacer()
@@ -51,7 +58,9 @@ struct ContentView: View {
             .alert(isPresented: self.$alertIsVisible) {
                 Alert(
                     title: Text("Hello there"),
-                    message: Text("The slider value is \(sliderInt)."),
+                    message: Text(
+                        scoringMessage()
+                    ),
                     dismissButton: .default(Text("Awesome!"))
                 )
             }
@@ -91,10 +100,19 @@ struct ContentView: View {
         self.alertIsVisible = true
     }
     
-    var sliderInt: Int {
-        return Int(
-            sliderValue.rounded()
-        )
+    func pointsForCurrentRound() -> Int {
+        let diff: Int
+        diff = sliderInt > target ?
+                sliderInt - target :
+                target - sliderInt
+        
+        return 100 - diff
+    }
+    
+    func scoringMessage() ->String {
+        "The slider value is \(sliderInt).\n" +
+        "The target value is \(target).\n" +
+        "You scored \(pointsForCurrentRound()) points this round."
     }
 }
 
