@@ -12,6 +12,7 @@ struct ContentView: View {
     // Properties
     // ==========
     static let max_score = 100
+    static let midnight_blue = Color(red: 0, green: 0.2, blue: 0.4)
     var sliderInt: Int {
         Int(
             sliderValue.rounded()
@@ -73,14 +74,9 @@ struct ContentView: View {
             // Target row
             HStack {
                 Text("Put the bullseye as close as you can to:")
-                    .font(Font.custom("Arial Rounded MT Bold", size: 18))
-                    .foregroundColor(Color.white)
-                    .shadow(color: Color.black, radius: 5, x: 2, y: 2)
-                    .padding()
+                    .modifier(LabelStyle())
                 Text("\(target)")
-                    .font(Font.custom("Arial Rounded MT Bold", size: 24))
-                    .foregroundColor(Color.yellow)
-                    .shadow(color: Color.black, radius: 5, x: 2, y: 2)
+                    .modifier(ValueStyle())
             }
             
             Spacer()
@@ -88,16 +84,13 @@ struct ContentView: View {
             // Slider row
             HStack {
                 Text("1")
-                    .font(Font.custom("Arial Rounded MT Bold", size: 18))
-                    .foregroundColor(Color.white)
-                    .shadow(color: Color.black, radius: 5, x: 2, y: 2)
+                    .modifier(LabelStyle())
 //                Slider(value: Binding.constant(100))
 //                Slider(value: .constant(100))
                 Slider(value: $sliderValue, in: 1...100)
+                    .accentColor(.green)
                 Text("100")
-                    .font(Font.custom("Arial Rounded MT Bold", size: 18))
-                    .foregroundColor(Color.white)
-                    .shadow(color: Color.black, radius: 5, x: 2, y: 2)
+                    .modifier(LabelStyle())
             }
             
             Spacer()
@@ -108,12 +101,11 @@ struct ContentView: View {
                 alertIsVisible = true
             }) {
                 Text("Hit me!")
-                    .font(Font.custom("Arial Rounded MT Bold", size: 18))
-                    .foregroundColor(Color.black)
+                    .modifier(ButtonLargeTextStyle())
             }
             .background(
                 Image("Button-Normal")
-                    .shadow(color: Color.black, radius: 5, x: 2, y: 2)
+                    .modifier(Shadow())
             )
             .alert(isPresented: self.$alertIsVisible) {
                 Alert(
@@ -131,39 +123,37 @@ struct ContentView: View {
             
             // Score row
             HStack {
-                Button("Start over") {
+                Button(action: {
                     startGame()
+                }) {
+                    Image("StartOverIcon")
+                    Text("Start over").modifier(ButtonSmallTextStyle())
                 }
+                .background(Image("Button-Highlighted")
+                                .modifier(Shadow()))
                 
                 Spacer()
                 
-                Text("Score:")
-                    .font(Font.custom("Arial Rounded MT Bold", size: 18))
-                    .foregroundColor(Color.white)
-                    .shadow(color: Color.black, radius: 5, x: 2, y: 2)
-                Text("\(score)")
-                    .font(Font.custom("Arial Rounded MT Bold", size: 18))
-                    .foregroundColor(Color.white)
-                    .shadow(color: Color.black, radius: 5, x: 2, y: 2)
+                Text("Score:").modifier(LabelStyle())
+                Text("\(score)").modifier(ValueStyle())
                 
                 Spacer()
                 
-                Text("Round:")
-                    .font(Font.custom("Arial Rounded MT Bold", size: 18))
-                    .foregroundColor(Color.white)
-                    .shadow(color: Color.black, radius: 5, x: 2, y: 2)
-                Text("\(round)")
-                    .font(Font.custom("Arial Rounded MT Bold", size: 18))
-                    .foregroundColor(Color.white)
-                    .shadow(color: Color.black, radius: 5, x: 2, y: 2)
+                Text("Round:").modifier(LabelStyle())
+                Text("\(round)").modifier(ValueStyle())
                 
                 Spacer()
                 
                 Button(action:{}) {
-                    Text("Info")
+                    Image("InfoButton")
+                    Text("Info").modifier(ButtonSmallTextStyle())
+                        .padding(.trailing)
                 }
+                .background(Image("Button-Highlighted")
+                                .modifier(Shadow()))
             }
             .padding(.bottom, 20)
+            .accentColor(ContentView.midnight_blue)
         }
         .onAppear() {
             self.startGame()
@@ -197,6 +187,49 @@ struct ContentView: View {
         target = .random(in: 1...100)
         round += 1
         sliderValue = Double.random(in: 1...100)
+    }
+}
+
+
+// View modifiers
+// ==============
+struct LabelStyle: ViewModifier {
+    func body(content: Content) -> some View {
+        content
+            .font(Font.custom("Arial Rounded MT Bold", size: 18))
+            .foregroundColor(Color.white)
+            .modifier(Shadow())
+    }
+}
+
+struct ValueStyle: ViewModifier {
+    func body(content: Content) -> some View {
+        content
+            .font(Font.custom("Arial Rounded MT Bold", size: 24))
+            .foregroundColor(Color.yellow)
+            .modifier(Shadow())
+    }
+}
+
+struct Shadow: ViewModifier {
+    func body(content: Content) -> some View {
+        content.shadow(color: Color.black, radius: 5, x: 2, y: 2)
+    }
+}
+
+struct ButtonLargeTextStyle: ViewModifier {
+    func body(content: Content) -> some View {
+        content
+            .font(Font.custom("Arial Rounded MT Bold", size: 18))
+            .foregroundColor(Color.black)
+    }
+}
+
+struct ButtonSmallTextStyle: ViewModifier {
+    func body(content: Content) -> some View {
+        content
+            .font(Font.custom("Arial Rounded MT Bold", size: 12))
+            .foregroundColor(Color.black)
     }
 }
 
